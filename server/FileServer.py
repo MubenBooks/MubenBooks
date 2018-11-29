@@ -3,6 +3,13 @@ import tornado.ioloop
 import tornado.httpserver
 import os
 
+"""
+    TO: 1、完善上传服务器代码
+        2、增加文件hash存储
+        3、根据hash值获取文件路径并返回文件
+"""
+
+
 class IndexHandler(tornado.web.RequestHandler):
     async def get(self):
         self.render("index.html")
