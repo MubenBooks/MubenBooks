@@ -19,7 +19,7 @@ class SendEmail:
         self.password = conf.get('smtp', 'password')
         self.from_addr = conf.get('smtp', 'from_addr')
 
-    def send_email(self, To, path, title):
+    def send(self, To, path, title):
         """send email to 'To'
 
         param: To  --The destination email address
@@ -60,3 +60,4 @@ class SendEmail:
             server.close()
             return
 
+sendemail = SendEmail()
