@@ -1,0 +1,45 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Default title {% end %}</title>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+    </script>
+</head>
+<body>
+    <ul>
+        {% for book in books  %}
+            {% block book %}
+            <li id="{{ book.id }}">{{ book.id }}</li>
+                <li>{{ escape(book.title) }}</li>
+                <li>{{ escape(book.author) }}</li>
+                <li>{{ escape(book.description) }}</li>
+                <li>
+                    <input id="sendto" type="email" placholder="Please Enter send email address" name="toemail"/>
+                </li>
+                <li><button>推送</button</li>
+            {% end %}
+        {% end %}
+    </ul>
+</body>
+
+<script>
+function SendBook(){
+    $.post("/book/send",)
+}
+
+$("button").click(function(){
+    _json = {};
+    alert("Please Add 384711721@qq.com to allowed post list")
+    var val = $("li").first().val();
+    var To = $("input").first().val();
+
+    _json["book_id"] = val;
+    _json["To"] = To;
+
+    $.post("/book/send", _json, function(){
+        alert("Send successfully!!!")
+    })
+})
+</script>
+</html>
