@@ -9,7 +9,8 @@ import logging
 from tornado.options import define, options, parse_command_line
 
 """
-    todo: 当使用chrome下载时，会出现闪退的情况
+    todos: 1.当使用chrome下载时，会出现闪退的情况
+           2.当出现大并发需求时，如何提高效率
 """
 
 
