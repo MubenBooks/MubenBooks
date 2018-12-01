@@ -18,11 +18,12 @@ import unicodedata
 
 # define
 from tornado.options import define, options
-
+from utils.define import *
 # Request Handler
 import MubenMain
 import MubenAdmin
 import MubenAuth
+import MubenBook
 
 define("port", default=8888, help="default listen on port 8888", type=int)
 define("db_host", default=db_host, help="blog database host")
@@ -35,11 +36,11 @@ define("db_passwd", default=db_password, help="ebooks website database password"
 async def maybe_create_tables(db):
     try:
         with (await db.cursor()) as cur:
-            await cur.execute("SELECT COUNT(*) FROM ebooks LIMIT 1")
+            await cur.execute("SELECT COUNT(*) FROM books LIMIT 1")
             await cur.fetchone()
     except psycopg2.ProgrammingError:
         with open("schema.sql") as f:
-            schma = f.read()
+            schema = f.read()
 
         with (await db.cursor()) as cur:
             await cur.execute(schema)
@@ -50,19 +51,23 @@ class Application(tornado.web.Application):
     def __init__(self, db):
         self.db = db
         handlers = [
-            (r"/", MubenMain.HomeHandler).
+            (r"/", MubenMain.HomeHandler),
             (r"/index", MubenMain.HomeHandler),
             (r"/search", MubenMain.SearchHandler),
+
+            # 图书详情及功能页
+            (r"/book", MubenBook.BookDetailsHandler),
+            (r"/book/sender", MubenBook.BookSendHandler),
 
             # admin page
             (r"/admin/login", MubenAdmin.AuthLoginHandler),
             (r"/admin/logout", MubenAdmin.AuthLogoutHandler),
             (r"/admin/index", MubenAdmin.IndexHandler),
-            (r"/admin/ebooks/manager", MubenAdmin.BooksMangerHandler),
+            (r"/admin/ebooks/manager", MubenAdmin.BooksManagerHandler),
 
             # auth page
             (r"/auth/login", MubenAuth.AuthLoginHandler),
-            (r"/auth/logout", MubenAuth.AuthLogouthandler),
+            (r"/auth/logout", MubenAuth.AuthLogoutHandler),
             (r"/auth/register", MubenAuth.AuthRegisterHandler),
         ]
         settings = dict(
@@ -74,7 +79,7 @@ class Application(tornado.web.Application):
             login_url="/auth/login",
             debug=True,
         )
-        supper(Application, self).__init__(handlers, **settings)
+        super(Application, self).__init__(handlers, **settings)
 
 
 
@@ -95,9 +100,10 @@ async def main():
 
         # Simply shutdown with Ctrl-C
         # More gracefully should call shutdown_event.set()
-        shutdown_event = tornado.lock.Event()
-        await shutdown_event.await()
+        shutdown_event = tornado.locks.Event()
+        await shutdown_event.wait()
 
 
 if __name__ == "__main__":
     tornado.ioloop.IOLoop.current().run_sync(main)
+
