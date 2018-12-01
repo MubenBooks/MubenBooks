@@ -1,5 +1,6 @@
 # 图书详情页面
 # 图书推送功能
+import requests
 from BaseHandler import *
 import logging
 from utils.smtp import *

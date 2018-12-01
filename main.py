@@ -57,7 +57,7 @@ class Application(tornado.web.Application):
 
             # 图书详情及功能页
             (r"/book", MubenBook.BookDetailsHandler),
-            (r"/book/sender", MubenBook.BookSendHandler),
+            (r"/book/send", MubenBook.BookSendHandler),
 
             # admin page
             (r"/admin/login", MubenAdmin.AuthLoginHandler),

@@ -1,9 +1,11 @@
 # kindle 电子书推送支持模块
 import smtplib
-import ConfigParser
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
+try:
+    import ConfigParser
+except:
+    import configparser as ConfigParser
 
 
 class SendEmail:
@@ -13,7 +15,7 @@ class SendEmail:
 
     def initialize(self):
         conf = ConfigParser.ConfigParser()
-        conf.read('../conf/smtp.conf')
+        conf.read('./conf/smtp.conf')
         self.server = conf.get('smtp', 'server')
         self.port = conf.get('smtp', 'port')
         self.password = conf.get('smtp', 'password')
