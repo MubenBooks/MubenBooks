@@ -5,17 +5,17 @@
 # and others pages
 
 import tornado.web
-
 import logging
+from BaseHandler import *
 
 
-class HomeHandler(tornado.web.RequestHandler):
+class HomeHandler(BaseHandler):
     """
         The Home page handler.
     """
     pass
 
-class SearchHandler(tornado.web.RequestHandler):
+class SearchHandler(BaseHandler):
     """
         The search page handler.
     """

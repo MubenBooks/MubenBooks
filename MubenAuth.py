@@ -4,9 +4,9 @@
 # register
 import logging
 import tornado.web
+from BaseHandler import *
 
-
-class AuthLoginHandler(tornado.web.RequestHandler):
+class AuthLoginHandler(BaseHandler):
     """
         Login Request handler
     """
@@ -14,7 +14,7 @@ class AuthLoginHandler(tornado.web.RequestHandler):
         self.write("I am login module")
 
 
-class AuthLogoutHandler(tornado.web.RequestHandler):
+class AuthLogoutHandler(BaseHandler):
     """
         Logout Request Handler
     """
@@ -22,7 +22,7 @@ class AuthLogoutHandler(tornado.web.RequestHandler):
         self.write("I am logout module")
 
 
-class AuthRegisterHandler(tornado.web.RequestHandler):
+class AuthRegisterHandler(BaseHandler):
 
     """
         Register request handler

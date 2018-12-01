@@ -2,11 +2,11 @@
 # Manager for adding books and configure database
 # Later will support users manage
 import logging
-
 import tornado.web
+from BaseHandler import BaseHandler
 
 
-class IndexHandler(tornado.web.RequestHandler):
+class IndexHandler(BaseHandler):
     """
         Admin page Index Request Handler
     """
@@ -14,7 +14,7 @@ class IndexHandler(tornado.web.RequestHandler):
         self.write("Hello I am admin manager")
 
 
-class BooksManagerHandler(tornado.web.RequestHandler):
+class BooksManagerHandler(BaseHandler):
     """
         The page off mange books
 
@@ -27,7 +27,7 @@ class BooksManagerHandler(tornado.web.RequestHandler):
         self.write("Hello, here is book manager page")
 
 
-class AuthLoginManagerHandler(tonado.web.RequestHandler):
+class AuthLoginHandler(BaseHandler):
     """
         Admin login Request Handler
 
@@ -35,7 +35,7 @@ class AuthLoginManagerHandler(tonado.web.RequestHandler):
     def get(self):
         self.write("Login manager")
 
-class AuthLogoutMangerHandler(tornado.web.RequestHandler):
+class AuthLogoutHandler(BaseHandler):
     """
         Admin logout Request handler
     """
