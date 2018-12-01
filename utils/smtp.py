@@ -21,7 +21,7 @@ class SendEmail:
         self.password = conf.get('smtp', 'password')
         self.from_addr = conf.get('smtp', 'from_addr')
 
-    def send(self, To, path, title):
+    def send(self, To, raw_file, title):
         """send email to 'To'
 
         param: To  --The destination email address
@@ -41,12 +41,12 @@ class SendEmail:
 
         # 构造附件
         try:
-            with open(path, 'rb') as fb:
-                fbfile = fb.read()
-                att = MIMEText(fbfile, 'base64', 'utf-8')
-                att['Content-Type'] = 'application/octet-stream'
-                att['Content-Disposition'] = 'attachment; filename="{0}"'.format(title)
-                message.attach(att)
+            # with open(path, 'rb') as fb:
+                # fbfile = fb.read()
+            att = MIMEText(raw_file, 'base64', 'utf-8')
+            att['Content-Type'] = 'application/octet-stream'
+            att['Content-Disposition'] = 'attachment; filename="{0}"'.format(title)
+            message.attach(att)
         except Exception as e:
             logging.warning(e)
             return

@@ -74,8 +74,8 @@ class Application(tornado.web.Application):
             project_title=u"Muben Ebooks for Kindle Post and EPUB Reader",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "ebookstatic"),
-            xsrf_cookies=True,
-            cookie_secret="__TODO:_GENERATE_YOUROWN_RANDOM_VALUE_HERE_",
+            # xsrf_cookies=True,
+            cookie_secret="2hcicVu+TqShDpfsjMWQLZ0Mkq5NPEWSk9fi0zsSt3A=",
             login_url="/auth/login",
             debug=True,
         )

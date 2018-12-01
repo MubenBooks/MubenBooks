@@ -10,7 +10,7 @@ from tornado.options import define, options, parse_command_line
 
 """
     todos: 1.当使用chrome下载时，会出现闪退的情况
-           2.当出现大并发需求时，如何提高效率
+    2.当出现大并发需求时，如何提高效率
 """
 
 
@@ -214,15 +214,16 @@ class TestHandler(tornado.web.RequestHandler):
 settings = dict(
     template_path = 'views',
     static_path = 'static',
+    debug = True,
 )
 
 if __name__ == "__main__":
     parse_command_line()
 
     app = tornado.web.Application(
-            [(r"/fileupload", UploadHandler),
-                (r"/", IndexHandler),
-                (r"/index", TestHandler)]
+            [(r"/upload", UploadHandler),
+                (r"/get", IndexHandler),
+                (r"/", TestHandler)]
             , **settings)
     app.listen(options.port)
     # httpserver = tornado.httpserver.HTTPServer(app)

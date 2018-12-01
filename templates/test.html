@@ -10,7 +10,7 @@
     <ul>
         {% for book in books  %}
             {% block book %}
-            <li id="{{ book.id }}">{{ book.id }}</li>
+            <li id="book_id">{{ book.id }}</li>
                 <li>{{ escape(book.title) }}</li>
                 <li>{{ escape(book.author) }}</li>
                 <li>{{ escape(book.description) }}</li>
@@ -31,11 +31,12 @@ function SendBook(){
 $("button").click(function(){
     _json = {};
     alert("Please Add 384711721@qq.com to allowed post list")
-    var val = $("li").first().val();
+    var val_ = $("#book_id").text();
     var To = $("input").first().val();
-
-    _json["book_id"] = val;
-    _json["To"] = To;
+    
+    console.log(val_)
+    _json["book_id"] = parseInt(val_);
+    _json["to"] = To;
 
     $.post("/book/send", _json, function(){
         alert("Send successfully!!!")

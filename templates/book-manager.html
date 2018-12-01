@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>图书添加管理</title>
+    </head>
+
+    <body>
+        <h2>图书添加</h2>
+        <form method="post" action="/admin/ebooks/manager" encrypt="multipart/data-form">
+            <p>封面: </p><input type="file" name="cover" id="cover" />
+            <p>标题: </p><input type="text" name="title" id="title"/>
+            <p>目录: </p><input type="text" name="contents" id="contents"/>
+            <p>分类: </p><input type="text" name="catalog" value="图书" id="catalog" />
+            <p>作者: </p><input type="text" name="author" id="author" />
+            <p>发行时间: </p><input type="text" name="publish_time" id="publish_time" />
+            <p>简介: </p><input type="text" name="description" id="book_description"/>
+            <p>ISBN: </p><input type="text" name="book_isbn" id="book_isbn" />
+        </form>
+    </body>
+</html>
