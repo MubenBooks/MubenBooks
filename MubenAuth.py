@@ -28,4 +28,7 @@ class AuthRegisterHandler(BaseHandler):
         Register request handler
     """
     def get(self):
-        self.write("I am register module!")
+        self.render("create_user.html")
+
+    async def post(self):
+        self.write("function is still developing...")
