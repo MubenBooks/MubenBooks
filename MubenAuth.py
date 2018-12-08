@@ -2,7 +2,7 @@
 # login 
 # logout
 # register
-import bcrypt
+# import bcrypt
 import logging
 import tornado.web
 from BaseHandler import *

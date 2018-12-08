@@ -1,7 +1,0 @@
-nohup: ignoring input
-[I 181201 17:19:30 web:2162] 200 GET / (127.0.0.1) 14.80ms
-[I 181201 17:19:38 web:2162] 200 POST /upload (127.0.0.1) 12.25ms
-[I 181201 17:21:08 web:2162] 200 GET / (127.0.0.1) 8.49ms
-[I 181201 17:21:19 FileServer:183] file md5: 6776ea6b472ddc21c45c498004afb98a
-[I 181201 17:21:19 FileServer:202] file path: /home/pi/Git/MubenBooks/server/ebooks/67/8a/6776ea6b472ddc21c45c498004afb98a.mobi
-[I 181201 17:21:19 web:2162] 200 POST /upload (127.0.0.1) 30.91ms

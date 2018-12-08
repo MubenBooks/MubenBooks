@@ -1,0 +1,2 @@
+  File "/home/pi/Git/MubenBooks/server/FileServer.py", line 12
+SyntaxError: Non-ASCII character '\xe5' in file /home/pi/Git/MubenBooks/server/FileServer.py on line 13, but no encoding declared; see http://python.org/dev/peps/pep-0263/ for details

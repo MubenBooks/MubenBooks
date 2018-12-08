@@ -208,7 +208,7 @@ class UploadHandler(tornado.web.RequestHandler):
 class TestHandler(tornado.web.RequestHandler):
 
     async def get(self):
-        self.render("index.html")
+        self.render("files.html")
 
 
 settings = dict(

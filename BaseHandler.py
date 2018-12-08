@@ -52,4 +52,10 @@ class BaseHandler(tornado.web.RequestHandler):
             raise ValueError("Expected 1 result, got %d" % len(results))
         return results[0]
 
+    async def and_user_exists(self, *args):
+        """Query for any user exists.
+            
+        Return True if there alreay exists one user, else return False
+        """
+        return bool(await self.query("SELECT * FROM users WHERE userrname=%s LIMIT 1", *args))
 
