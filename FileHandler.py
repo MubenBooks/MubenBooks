@@ -1,23 +1,13 @@
 import hashlib
-import tornado.web
 import tornado.gen
-import tornado.ioloop
-import tornado.httpserver
-import os
 import logging
 
-from tornado.options import define, options, parse_command_line
+from BaseHandler import *
 
 """
     todos: 1.当使用chrome下载时，会出现闪退的情况
     2.当出现大并发需求时，如何提高效率
 """
-
-
-
-define("book_root_path", default=os.path.join(os.path.dirname(__file__), 
-    'ebooks'), help = "default book store path")
-define("port", default = 7000, help = "run on defaul given port", type=int) 
 
 
 class FileSystem:
@@ -107,7 +97,7 @@ encrypt = Encrypt()
 
 
 
-class IndexHandler(tornado.web.RequestHandler):
+class SendBookHandler(BaseHandler):
     """
         根据文件散列提取文件
     """
@@ -163,7 +153,7 @@ class IndexHandler(tornado.web.RequestHandler):
             self.flush()
 
 
-class UploadHandler(tornado.web.RequestHandler):
+class UploadBookHandler(BaseHandler):
     # tornado.httputil.HTTPFile
     # 1. filename
     # 2. body
@@ -205,28 +195,23 @@ class UploadHandler(tornado.web.RequestHandler):
         self.write("上传成功！")
 
 
-class TestHandler(tornado.web.RequestHandler):
+class TestHandler(BaseHandler):
 
     async def get(self):
         self.render("files.html")
 
 
-settings = dict(
-    template_path = 'views',
-    static_path = 'static',
-    debug = True,
-)
-
 if __name__ == "__main__":
-    parse_command_line()
+    # parse_command_line()
 
-    app = tornado.web.Application(
-            [(r"/upload", UploadHandler),
-                (r"/get", IndexHandler),
-                (r"/", TestHandler)]
-            , **settings)
-    app.listen(options.port)
-    # httpserver = tornado.httpserver.HTTPServer(app)
-    # httpserver.bind(8000)
-    # httpserver.start()
-    tornado.ioloop.IOLoop.current().start()
+    # app = tornado.web.Application(
+    #         [(r"/upload", UploadHandler),
+    #             (r"/get", IndexHandler),
+    #             (r"/", TestHandler)]
+    #         , **settings)
+    # app.listen(options.port)
+    # # httpserver = tornado.httpserver.HTTPServer(app)
+    # # httpserver.bind(8000)
+    # # httpserver.start()
+    # tornado.ioloop.IOLoop.current().start()
+    pass

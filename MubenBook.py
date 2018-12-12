@@ -1,8 +1,10 @@
 # 图书详情页面
 # 图书推送功能
 import requests
-from BaseHandler import *
 import logging
+import tornado.gen
+
+from BaseHandler import *
 from utils.smtp import *
 
 UPLOAD_HOST = "http://file.aaron.mobi"
@@ -52,7 +54,6 @@ class BookSendHandler(BaseHandler):
         logging.info(book_id)
 
         if book_id and to_addr:
-            sqlstr = """SELECT * FROM "books" as B WHERE B.id = %s"""
             logging.info("正在查询..")
             result = await self.queryone(sqlstr, int(book_id))
             logging.info("书籍查询完毕，正在提取")
@@ -64,5 +65,10 @@ class BookSendHandler(BaseHandler):
             return
         self.write("send to kindle field!")
         self.flush()
+
+    @gen.coroutine
+    def getBookInfo(self, _id):
+        sqlstr = """SELECT * FROM "books" as B WHERE B.id = %s"""
+        result = yield self.queryone(sqlstr)
 
             

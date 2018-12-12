@@ -24,6 +24,7 @@ import MubenMain
 import MubenAdmin
 import MubenAuth
 import MubenBook
+import FileHandler
 
 define("port", default=8888, help="default listen on port 8888", type=int)
 define("db_host", default=db_host, help="blog database host")
@@ -31,6 +32,8 @@ define("db_port", default=db_port, help="postgresql database default port 5432")
 define("db_database", default=db_database, help="ebooks website database")
 define("db_user", default=db_user, help="ebooks website database user")
 define("db_passwd", default=db_password, help="ebooks website database password")
+define("book_root_path", default=os.path.join(os.path.dirname(__file__), 
+    'ebooks'), help = "default book store path")
 
 
 async def maybe_create_tables(db):
@@ -69,12 +72,17 @@ class Application(tornado.web.Application):
             (r"/auth/login", MubenAuth.AuthLoginHandler),
             (r"/auth/logout", MubenAuth.AuthLogoutHandler),
             (r"/auth/register", MubenAuth.AuthRegisterHandler),
+
+            # File upload and get
+            (r"/file/upload", FileHandler.UploadBookHandler),
+            (r"/file/email", FileHandler.SendBookHandler),
+            (r"/file/test_upload", FileHandler.TestHadnler),
         ]
         settings = dict(
             project_title=u"Muben Ebooks for Kindle Post and EPUB Reader",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "ebookstatic"),
-            # xsrf_cookies=True,
+            xsrf_cookies=True,
             cookie_secret="2hcicVu+TqShDpfsjMWQLZ0Mkq5NPEWSk9fi0zsSt3A=",
             login_url="/auth/login",
             debug=True,
