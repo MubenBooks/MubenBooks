@@ -17,6 +17,7 @@
                 <li>
                     <input id="sendto" type="email" placholder="Please Enter send email address" name="toemail"/>
                 </li>
+                  {% module xsrf_form_html() %}
                 <li><button>推送</button</li>
             {% end %}
         {% end %}
@@ -24,8 +25,10 @@
 </body>
 
 <script>
-function SendBook(){
-    $.post("/book/send",)
+    
+function getCookie(name){
+    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b")
+    return r ? r[1] : undefined
 }
 
 $("button").click(function(){
@@ -34,13 +37,35 @@ $("button").click(function(){
     var val_ = $("#book_id").text();
     var To = $("input").first().val();
     
-    console.log(val_)
+    console.log(val_);
     _json["book_id"] = parseInt(val_);
     _json["to"] = To;
 
-    $.post("/book/send", _json, function(){
-        alert("Send successfully!!!")
-    })
+    // _xsrf 
+    var xsrf = getCookie("_xsrf");
+
+    // $.post("/book/send", _json, function(){
+    //     alert("Send successfully!!!")
+    // })
+
+    $.ajax({
+        url: "/book/send",
+        method: "POST",
+        headers: {
+            "X-XSRFToken" : xsrf,
+        },
+        data : _json,
+        success: function(data){
+            alert(data);
+            // console.log(data);
+            // if (data['code'] == 100){
+            //     alert(data['msg'])
+            //     // window.reload();
+            // } else{
+            //     alert(data['msg']);
+            // }
+        }
+    });
 })
 </script>
 </html>

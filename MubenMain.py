@@ -13,7 +13,10 @@ class HomeHandler(BaseHandler):
     """
         The Home page handler.
     """
-    pass
+    @tornado.web.authenticated
+    async def get():
+    	user = self.get_secure_cookie('muben_user')
+    	self.write(user)
 
 class SearchHandler(BaseHandler):
     """

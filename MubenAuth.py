@@ -2,8 +2,9 @@
 # login 
 # logout
 # register
-# import bcrypt
+import bcrypt
 import logging
+import tornado.escape
 import tornado.web
 from BaseHandler import *
 
@@ -32,23 +33,28 @@ class AuthRegisterHandler(BaseHandler):
         self.render("create_user.html")
 
     async def post(self):
-        if await self.any_user_exists(self.get_argument("username")):
+        username = self.get_argument("username", '')
+        password = self.get_argument("password", '')
+        # post_email = self.get_argument("post_email", '')
+        register_email = self.get_argument("register_email", '')
+        phone_number = self.get_argument("phone_num", '')
+
+        if await self.any_user_exists(username):
             raise tornado.web.HTTPError(400, "用户已经存在")
         hashed_password = await tornado.ioloop.IOLoop.current().run_in_executor(
                 None,
                 bcrypt.hashpw,
-                tornado.escape.utf8(self.get_argument("password")),
+                tornado.escape.utf8(password),
                 bcrypt.gensalt(),
         )
 
         user = await self.queryone(
-                "INSERT INTO users (username, password, post_email, register_email, phone_num) "
-                "VALUES (%s, %s, %s, %s, %s) RETURN id",
-                self.get_argument("username"),
+                "INSERT INTO users (username, password, register_email, phone_num) "
+                "VALUES (%s, %s, %s, %s) RETURNING id",
+                username,
                 tornado.escape.to_unicode(hashed_password),
-                self.get_argument("post_email"),
-                self.get_argument("register_email"),
-                self.get_argument("phone_num"),
+                register_email,
+                phone_number,
                 )
         self.set_secure_cookie('muben_user', str(user.id))
         self.redirect(self.get_argument("next", "/"))

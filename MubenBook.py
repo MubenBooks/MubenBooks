@@ -5,15 +5,16 @@ import logging
 import tornado.gen
 
 from BaseHandler import *
-from utils.smtp import *
+# from utils.smtp import *
+from FileHandler import mailbook
 
 UPLOAD_HOST = "http://file.aaron.mobi"
 
-def GetBookContent(filename, md5, file_type):
-    params = {"filename": filename, "hash":md5, "type": file_type}
-    r = requests.get(UPLOAD_HOST + '/get', params=params)
-    r.encoding = "utf-8"
-    return r.content
+# def GetBookContent(filename, md5, file_type):
+#     params = {"filename": filename, "hash":md5, "type": file_type}
+#     r = requests.get(UPLOAD_HOST + '/get', params=params)
+#     r.encoding = "utf-8"
+#     return r.content
 
 
 class BookDetailsHandler(BaseHandler):
@@ -21,7 +22,7 @@ class BookDetailsHandler(BaseHandler):
     """
     async def get(self):
         self.set_secure_cookie('info', 'msg')
-        sefl.set_default_headers()
+        # self.set_default_headers()
         results = await self.query(
         'SELECT * FROM public."books"'
         )
@@ -30,11 +31,11 @@ class BookDetailsHandler(BaseHandler):
         self.render("test.html",
                 books = results,
                 title = "test")
-    def set_default_headers(self):
-        self.set_header("Access-Control-Allow-Origin", self.request.headers.get("Origin", ""))
-        self.set_header("Access-Control-Allow-Headers", "x-requested-with,authorization")
-        self.set_header("Access-Control-Allow-Methods", "POST,GET")
-        self.set_header("Access-Contrrol-Allow-Credentias", "true")
+    # def set_default_headers(self):
+    #     self.set_header("Access-Control-Allow-Origin", self.request.headers.get("Origin", ""))
+    #     self.set_header("Access-Control-Allow-Headers", "x-requested-with,authorization")
+    #     self.set_header("Access-Control-Allow-Methods", "POST,GET")
+    #     self.set_header("Access-Contrrol-Allow-Credentias", "true")
 
 class BookSendHandler(BaseHandler):
     """kindle书籍推送
@@ -54,21 +55,29 @@ class BookSendHandler(BaseHandler):
         logging.info(book_id)
 
         if book_id and to_addr:
-            logging.info("正在查询..")
-            result = await self.queryone(sqlstr, int(book_id))
-            logging.info("书籍查询完毕，正在提取")
-            book_content = GetBookContent(result['title'], reuslt['path'], result['format'])
-            logging.info("book 内容获取完毕！")
-            sendemail.send(to_addr, book_content, result['title'])
-            self.write(json.dumps({"status", '200'}))
-            self.flush()
-            return
-        self.write("send to kindle field!")
+            # logging.info("正在查询..")
+            # result = await self.queryone(sqlstr, int(book_id))
+            result = await self.getBookInfo(int(book_id))
+            if not result:
+                self.write("数据库查询失败, 请重试")
+                self.flush()
+                return
+            # book_content = GetBookContent(result['title'], reuslt['path'], result['format'])
+            # logging.info("book 内容获取完毕！")
+            # sendemail.send(to_addr, book_content, result['title'])
+            status = await mailbook.send(to_addr, result)
+            if status:
+                self.write(ReturnCode(100, '发送成功!'))
+                self.flush()
+                return
+        self.write(ReturnCode(200, '书籍发送出错，请联系网站管理员'))
         self.flush()
 
-    @gen.coroutine
+    @tornado.gen.coroutine
     def getBookInfo(self, _id):
+        """Query Book information by book id"""
         sqlstr = """SELECT * FROM "books" as B WHERE B.id = %s"""
-        result = yield self.queryone(sqlstr)
+        result = yield from self.queryone(sqlstr, _id)
+        raise tornado.gen.Return(result)
 
-            
+

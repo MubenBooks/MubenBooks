@@ -15,7 +15,6 @@ import tornado.options
 import tornado.web
 import unicodedata
 
-
 # define
 from tornado.options import define, options
 from utils.define import *
@@ -48,6 +47,12 @@ async def maybe_create_tables(db):
         with (await db.cursor()) as cur:
             await cur.execute(schema)
 
+# class StaticFileHandler(tornado.web.StaticFileHandler):
+#     """Reload StaticFileHandler, add _xsrf cookie"""
+#     def __init__(self, *args, **kwargs):
+#         super(StaticFileHandler, self).__init__(*args, **kwargs)
+#         self.xsrf_token
+
 
 class Application(tornado.web.Application):
     
@@ -75,8 +80,8 @@ class Application(tornado.web.Application):
 
             # File upload and get
             (r"/file/upload", FileHandler.UploadBookHandler),
-            (r"/file/email", FileHandler.SendBookHandler),
-            (r"/file/test_upload", FileHandler.TestHadnler),
+            # (r"/file/email", FileHandler.SendBookHandler),
+            (r"/file/test_upload", FileHandler.TestHandler),
         ]
         settings = dict(
             project_title=u"Muben Ebooks for Kindle Post and EPUB Reader",

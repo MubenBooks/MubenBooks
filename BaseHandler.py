@@ -1,8 +1,7 @@
 # Base Handler
-# «Î«Û‘§¥¶¿Ì
 import tornado.web
 import logging
-
+import json
 
 class BaseHandler(tornado.web.RequestHandler):
     """
@@ -52,10 +51,20 @@ class BaseHandler(tornado.web.RequestHandler):
             raise ValueError("Expected 1 result, got %d" % len(results))
         return results[0]
 
-    async def and_user_exists(self, *args):
+    async def any_user_exists(self, *args):
         """Query for any user exists.
             
         Return True if there alreay exists one user, else return False
         """
-        return bool(await self.query("SELECT * FROM users WHERE userrname=%s LIMIT 1", *args))
+        return bool(await self.query("SELECT * FROM users WHERE username=%s LIMIT 1", *args))
+
+
+def ReturnCode(status, arg=None):
+    data = {'code': status}
+
+    if not arg:
+        return json.dumps(data)
+
+    data['msg'] = arg
+    return json.dumps(data)
 

@@ -1,5 +1,7 @@
 # kindle 电子书推送支持模块
+import os
 import smtplib
+import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 try:
@@ -49,7 +51,7 @@ class SendEmail:
             message.attach(att)
         except Exception as e:
             logging.warning(e)
-            return
+            return False
         
         try:
             server = smtplib.SMTP_SSL()
@@ -58,8 +60,10 @@ class SendEmail:
             server.sendmail(self.from_addr, To, message.as_string())
         except Exception as e:
             logging.warning(e)
-        finally:
-            server.close()
-            return
+            logging.warning(os.path.dirname(__file__))
+            return False
+
+        server.close()
+        return True    
 
 sendemail = SendEmail()

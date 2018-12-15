@@ -1,13 +1,19 @@
 import hashlib
 import tornado.gen
 import logging
+# import types
+import os
 
+from tornado.options import options
+from utils.smtp import *
 from BaseHandler import *
 
 """
     todos: 1.当使用chrome下载时，会出现闪退的情况
     2.当出现大并发需求时，如何提高效率
 """
+
+book_root_path = os.path.join(os.path.dirname(__file__),  'ebooks')
 
 
 class FileSystem:
@@ -20,7 +26,7 @@ class FileSystem:
         self.if_no_ebooks()
 
     def initialize(self):
-        self.root = options.book_root_path
+        self.root = book_root_path
 
     def if_no_ebooks(self):
         # ebooks 文件夹不存在时创建文件夹
@@ -91,66 +97,45 @@ class Encrypt:
             logging.error(e)
             return
 
+
+
+class MailBook:
+    @tornado.gen.coroutine
+    def send(self, to_addr, info):
+        """从本地发送文件
+
+            @to_addr: 接收方地址
+            @info: 电子书数据
+
+            @return:
+                return True if successfully, else return False
+        """
+        try:
+            filename = info['title']
+            filehash = info['path']
+            filetype = info['format']
+        except IndexError as e:
+            logging.error(e)
+            return False
+
+        # 生成文件路径
+        path = os.path.join(file.GetPathByHash(filehash),
+         filehash + file.file_extension(filetype))
+
+        try:
+            with open(path, 'rb') as fb:
+                book_content = fb.read()
+        except:
+            logging.warning("read book file from local failed...")
+            return
+
+        status = sendemail.send(to_addr, book_content, filename)
+        raise tornado.gen.Return(status)
+
 # Create Object
 file = FileSystem()
 encrypt = Encrypt()
-
-
-
-class SendBookHandler(BaseHandler):
-    """
-        根据文件散列提取文件
-    """
-
-    def get(self):
-        filename = self.get_argument("filename", '')
-        file_hash = self.get_argument("hash", "")
-        file_type = self.get_argument("type", "")
-
-        logging.info("filename is: " + filename)
-        logging.info("file hash is: " + file_hash)
-        logging.info("file type is: " + file_type)
-
-        CHUNK_SIZE = 512000         # 0.5 MB
-        
-        # 文件名或者文件MD5值为空
-        if not filename or not file_hash:
-            self.write("请输入文件名参数再尝试!!!")
-            self.flush()
-            return
-
-        # 生成文件路径
-        self.path = os.path.join(file.GetPathByHash(file_hash),
-         file_hash + file.file_extension(file_type))
-
-
-        # 设置文档类型， 告诉浏览器把它当文件下载
-        self.set_header('Content-Type', 'application/octet-stream; charset=utf-8')
-        self.set_header('Content-Length', os.path.getsize(self.path))
-        # 设置文件下载时使用的名称
-        self.set_header('Content-Disposition', 
-            ('attachment; name="%s"; filename="%s"' 
-                % (filename, filename + file.file_extension(file_type))
-            )
-        )
-
-        try:
-            # 根据hash值获取前两层文件夹地址
-            # 获取文件夹地址后和文件名合并
-            with open(self.path, 'rb') as f:
-                while True:
-                    data = f.read(CHUNK_SIZE)
-                    if not data:
-                        break
-                    # 发送文件碎片
-                    self.write(data)
-                    self.flush()
-            # 结束文件发送
-            self.finish()
-        except Exception as e:
-            logging.error("读取文件失败...")
-            self.write("读取文件失败!")
-            self.flush()
+mailbook = MailBook()
 
 
 class UploadBookHandler(BaseHandler):
