@@ -7,3 +7,4 @@ build
 # 忽略文件夹
 ebooks
 __pycache__
+conf
