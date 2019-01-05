@@ -1,0 +1,9 @@
+# 忽略文件
+*.py[cod]
+define.py
+dist
+build
+
+# 忽略文件夹
+ebooks
+__pycache__
