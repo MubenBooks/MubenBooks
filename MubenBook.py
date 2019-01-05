@@ -3,6 +3,7 @@
 import requests
 import logging
 import tornado.gen
+import tornado.ioloop
 
 from BaseHandler import *
 # from utils.smtp import *
@@ -65,12 +66,12 @@ class BookSendHandler(BaseHandler):
             # book_content = GetBookContent(result['title'], reuslt['path'], result['format'])
             # logging.info("book 内容获取完毕！")
             # sendemail.send(to_addr, book_content, result['title'])
-            status = await mailbook.send(to_addr, result)
-            if status:
-                self.write(ReturnCode(100, '发送成功!'))
-                self.flush()
-                return
-        self.write(ReturnCode(200, '书籍发送出错，请联系网站管理员'))
+
+            ioloop = tornado.ioloop.IOLoop.current()  # get ioloop object on current thread
+            ioloop.spawn_callback(mailbook.send(to_addr, result))
+            # status = await mailbook.send(to_addr, result)
+
+        self.write(ReturnCode(200, '书籍发送成功，请稍后...'))
         self.flush()
 
     @tornado.gen.coroutine
